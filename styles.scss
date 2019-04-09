@@ -1,0 +1,286 @@
+@charset "UTF-8";
+
+// variables 
+$primary-color: grey;
+$secondary-color: hsla(211, 50%, 73%, 1);
+$tertiary-color: darkgrey;
+$companion-color: hsla(31, 100%, 73%, 1); // color inspired by Natalya Shelburne's presentation
+$base-color: lightgrey;
+$increase-fw: 250; // for math in @media section 
+
+// mixin/media variables for if/then statements
+$phone: 12.5em;
+$tablet: 30em;
+$desktop: 60em;
+
+// mixin (non-argumentative)
+@mixin nav-list {
+  display: inline-block;
+  width: auto;
+  padding: 0;
+}
+
+// mixin (argumentative)
+@mixin bright-grey ($color) {
+  background-color: lighten($color, 13%);
+}
+
+// mixin/extend blend to handle a @media error 
+@mixin caption {
+  display: block;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  color: #fff;
+  left: 0em;
+  padding:0em;
+  z-index: 2;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+%caption {
+  @include caption;
+}
+
+
+// smart settings for responsive layouts and box-sizing behaviors 
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+	font-family: "Ubuntu", Arial, Geneva, sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+h2, h4 {
+  font-family: 'Niconne', cursive;
+  font-weight: normal;
+  color: $companion-color; 
+  margin-top: 0;
+  border-bottom: 1px dashed lighten($secondary-color, 14%); // color function (1 of 2)
+}
+.wrapper {
+	margin: 0 auto;
+}
+
+.bkgdmatting {
+  height: 15px;
+}
+
+nav {
+  ul {
+  list-style-type: none;
+  background-color: $primary-color; 
+  padding: .75em;
+  margin: 0;
+  border-bottom: 3px solid $secondary-color;
+  overflow: auto;
+  }
+
+  a {
+  color: lighten($base-color, 13%); // color function (2 of 2)
+  text-decoration: none;
+  display: inline;
+  padding-left:3.333333%;
+  }
+
+  :hover {
+  color: $secondary-color;
+  }
+}
+
+// double nesting a border-bottom within the gallery (1 of 1)
+.content, 
+.gallery {
+  
+  @include bright-grey($base-color); // mixin & color function (1 of 1)
+  border-bottom: {
+    left-radius: 4px;
+    right-radius: 4px;
+  }
+
+  padding: 2em;
+  
+  // working with flexbox to organize columns
+  ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex; 
+  flex-flow: row wrap;
+  }
+  li {
+  flex: 0 0 50%;
+  }
+  img { 
+  width: 100%; 
+  border-radius: 4px;
+  }
+  figure {
+    position: relative;
+    padding: 2em;
+    margin: 0;
+  }
+  figcaption{
+    text-align: center;
+  }
+}
+
+.fg-caption-text {
+  @extend %caption; // extend helps with @media and img title overlay error and styles, respectively 
+  top: 10em;
+  font-weight: 700;
+}
+
+
+footer {
+  background-color: $primary-color;
+  color: $base-color;
+  clear: both;
+  margin: 0em 0.5em 0.5em 0.5em;
+  border-radius: 4px;
+
+  p {
+  text-align: center;
+  font-size: 0.7em;
+  }
+
+  img {
+  width: 30px;
+  }
+
+  a {
+  color: white;
+  text-decoration: none;
+  }
+}
+
+// mobile devices (phone size)
+
+@mixin mq ($breakpoint: $phone) {
+  @if $breakpoint == $phone {
+    @media (min-width: $phone) { 
+  .wrapper {
+      width: 97%;
+  }
+
+ nav li,
+  nav li:nth-child(even),
+  nav li:nth-child(odd) {
+    @include nav-list; // mixin (1 of 5)
+    float: none;
+  }
+
+  nav a {
+    padding: 0em 1em;
+
+  }
+  .content {
+    display: grid;
+    grid-gap: 1em;
+  }
+
+  .aside {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: 1fr 1fr;
+  }
+
+.fg-caption-text {
+  @include caption; // mixin (2 of 5)
+  color: $primary-color;
+  top: 1em;
+  font-weight: 200;
+      }
+    }
+  }
+
+// small devices (tablet size)
+
+  @else if $breakpoint == $tablet {
+    @media (min-width: $phone) and (max-width: $tablet) { 
+  .wrapper {
+      width: 97%;
+  }
+
+  nav li,
+  nav li:nth-child(even),
+  nav li:nth-child(odd) {
+    @include nav-list; // mixin (3 of 5)
+    float: none;
+  }
+
+  nav a {
+    padding: 0em 1em;
+
+  }
+  .content {
+    display: grid;
+    grid-gap: 1em;
+  }
+  .aside {
+    display: grid;
+    grid-gap: 2em;
+    grid-template-columns: 2fr 1fr;
+  }
+
+.fg-caption-text {
+  @include caption; // mixin (4 of 5)
+  top: 3em;
+  font-weight: 200 + $increase-fw; // math (1 of 2)
+  }
+ }
+}
+
+// large devices (desktop size)
+
+@else {
+@media (min-width: $desktop) { 
+  .wrapper {
+      width: 97%;
+      float: none;
+  }
+  h2 {
+    font-size: 3em;
+    border-bottom: 1px dashed $secondary-color;
+    color: grey;
+  }
+  h3 {
+    font-size: 2em;
+  }
+  div.row {
+    padding: 0;
+  }
+  nav li,
+  nav li:nth-child(even),
+  nav li:nth-child(odd) {
+    @include nav-list; // mixin (5 of 5)
+  }
+  .content {
+       grid-template-columns: 3fr 1fr;
+       grid-gap: 3em;
+    }
+  .aside {
+    display: block;
+  }
+  .fg-caption-text {
+  @include caption;
+  @include bright-grey($primary-color);
+  top: 5em;
+  font-weight: 450 + $increase-fw; // math (2 of 2)
+      }
+    }
+  }
+}
+
+@include mq($phone)
+@include mq($tablet)
+@include mq($desktop)
+
+
